@@ -1,4 +1,6 @@
 *.c
+00x_*
+00y_*
 
 #############
 ## Windows detritus
