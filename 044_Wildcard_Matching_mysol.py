@@ -49,12 +49,40 @@ class Solution(object):
         :type p: str
         :rtype: bool
         """
-        parts = [item for item in p.split('*') if item]
-        if p[0]!='*':
-            first_match()
-        if p[-1]!='*'
+        if not s:
+            return p == '' or p =='*'
+        if not p:
+            return False
+
+        dp = [[False for ch in xrange(len(p)+1)] for _ in xrange(len(s)+1)]
+
+        for i, line in enumerate(dp):
+            for j, num in enumerate(line):
+                if i == 0 and j == 0:
+                    dp[i][j] = True
+                elif i == 0:
+                    dp[i][j] = dp[i][j-1] and p[j-1] == '*'
+                elif j == 0:
+                    pass
+                else:
+                    if p[j-1] == '*':
+                        dp[i][j] = dp[i][j-1] or dp[i-1][j]
+                    elif p[j-1] == '?':
+                        dp[i][j] = dp[i-1][j-1]
+                    else:
+                        dp[i][j] = dp[i-1][j-1] and s[i-1] == p[j-1]
+        return dp[-1][-1]
+
 
 if __name__ == '__main__':
     sol = Solution()
-    print sol.isMatch('ab','*a')
+    # assert sol.isMatch("aa","a") == False
+    # assert sol.isMatch("aa","aa") == True
+    # assert sol.isMatch("aaa","aa") == False
+    # assert sol.isMatch("aa", "*") == True
+    # assert sol.isMatch("aa", "a*") == True
+    # assert sol.isMatch("ab", "?*") == True
+    # assert sol.isMatch("aab", "c*a*b") == False
+    # assert sol.isMatch("c", "*?*") == True
+    # print sol.isMatch('ab','*a')
     print sol.isMatch("babbbbaabababaabbababaababaabbaabababbaaababbababaaaaaabbabaaaabababbabbababbbaaaababbbabbbbbbbbbbaabbb","b**bb**a**bba*b**a*bbb**aba***babbb*aa****aabb*bbb***a")
