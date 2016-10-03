@@ -15,7 +15,7 @@ should be O(log (m+n)).
 #            3) Equal numbers in arrays ([1,3,3,3,5,6], [2,3,3,3,3,4])
 #            4) Empty array ([],[1,2,3]), ([1,2,3],[]), ([],[])
 #
-# Run time: 139ms / 163 ms
+# Run time: 115ms / 139ms / 163 ms
 
 
 class Solution(object):
@@ -37,13 +37,20 @@ class Solution(object):
             longer = nums1 if len(nums1)>=len(nums2) else nums2
             shorter = nums1 if len(nums1)<len(nums2) else nums2
             rank_s = min(len(shorter), rank/2)
+            # the key idea of this algorithm is this 
+            # rank_l + rank_s should always be rank
+            # then we could always drop the smaller element
+            # because the largest rank of the smaller element could
+            # only be (rank - 1) !
             rank_l = rank - rank_s
             if longer[rank_l-1] == shorter[rank_s-1]:
                 return longer[rank_l-1]
             elif longer[rank_l-1] < shorter[rank_s-1]:
-                return binary_search(longer[rank_l:], shorter, rank-rank_l)
+                # kick the smaller num out of our search range
+                return binary_search(longer[rank_l:], shorter[:rank_s], rank-rank_l)
             else:
-                return binary_search(shorter[rank_s:], longer, rank-rank_s)
+                # kick the smaller num out of our search range
+                return binary_search(shorter[rank_s:], longer[:rank_l], rank-rank_s)
 
             
         length = len(nums1) + len(nums2)
