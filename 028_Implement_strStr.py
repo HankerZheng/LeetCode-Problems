@@ -14,7 +14,7 @@ Subscribe to see which companies asked this question
 #             else, end compare mode and make p_haystack to the next element
 #             to the one which we start compare.
 #
-# Run time: 74 ms
+# Run time: 74 / 63 ms
 
 class Solution(object):
     def strStr(self, haystack, needle):
@@ -57,21 +57,20 @@ class Solution(object):
 
 
 
-    def strStr_re(self, haystack, needle):
+    def strStr(self, haystack, needle):
         """
         :type haystack: str
         :type needle: str
         :rtype: int
         """
-        if needle == "":
-            return 0
         if haystack == "":
-            return -1
-        import re
-        res = re.split(needle, haystack)[0]
-        res = len(res)
-        if res == len(haystack):
-            return -1
-        else:
-            return res
-
+            return 0 if needle == "" else -1
+        elif needle == "":
+            return 0
+        i_haystack = 0
+        while i_haystack + len(needle) - 1 < len(haystack):
+            if haystack[i_haystack] == needle[0] and haystack[i_haystack: i_haystack + len(needle)] == needle:
+                return i_haystack
+            else:
+                i_haystack += 1
+        return -1
