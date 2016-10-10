@@ -15,11 +15,7 @@ You should return the indices: [0,9].
 Subscribe to see which companies asked this question
 """
 
-# Key Points: Keep update 2 hashtables.
-#                (Keyword -> posi of str)
-#             Search through STR by block which is the length of Keyword
-#             Then, the problem has been converted into that to find 
-#             arithmetic sequence with common difference as the length of KW
+# Key Points: Sliding Windows
 #             
 #
 # Special Testcase: 1) key words stay together
@@ -35,33 +31,47 @@ class Solution(object):
     def findSubstring(self, s, words):
         """
         :type s: str
-        :type words: List[str]
+        :type worhttps://leetcode.com/problems/random-one-question/ds: List[str]
         :rtype: List[int]
         """
-        def check_end(input_dict):
-            for value in input_dict.values():
-                if value < 0:
-                    return 1
-            return 0
-
-        if (not s) or (not words):
+        def search_in(i, k):
+            start, end = i, i
+            we_expect = dict(dct)
+            while end + k - 1 < len(s):
+                new_string = s[end: end + k]
+                if new_string in we_expect:
+                    # add new_string into the window
+                    if we_expect[new_string] == 1:
+                        we_expect.pop(new_string)
+                    else:
+                        we_expect[new_string] -= 1
+                    if not we_expect:
+                        # we_expect is empty, we find one ans!!
+                        res.append(start)
+                    end += k
+                elif new_string in dct:
+                    # new_string is still a word but not we expect
+                    # free a old_string
+                    we_expect[ s[start:start+k]] = 1
+                    start += k
+                else:
+                    # new_string is junk
+                    we_expect = dict(dct)
+                    start = end = end + k
+                    
+        if not words:
             return []
-
-        kw_length = len(words[0])
-        if len(s) < kw_length:
-            return []
-        # initialize hashtable
-        hashtable = dict()
+        if not words[0]:
+            return range(len(s))
+        
+        dct = {}
         for word in words:
-            hashtable[word] = list()
-        # search through s by block
-        cursor = 0
-        while (cursor+kw_length-1) < len(s):
-            this_block = s[cursor: cursor+kw_length]
-            if this_block in words:
-                hashtable[this_block].append(cursor)
-            cursor += 1
-
+            dct[word] = dct.get(word, 0) + 1
+        res = []
+        k = len(words[0])
+        for i in xrange(k):
+            search_in(i, k)
+        return res
 
 
 if __name__ == '__main__':
