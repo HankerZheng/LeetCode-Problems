@@ -34,42 +34,62 @@
 
 
 # Key Point: DP
-#            the min-life of dungeon[m][n] is depend on dungeon[m-1][n] and 
-#            dungeon[m][n-1]
+#            the min-life of dungeon[m][n] is depend on dungeon[m+1][n] and 
+#            dungeon[m][n+1]
 # 
-#   If we start from [0,0] and end at Princess, there would be 
-#   If we start from Princess and end at [0,0], 
 # 
 # Time Complexity: O(M*N)
 
 
 class Solution(object):
-    def calculateMinimumHP(self, dungeon):
+    def calculateMinimumHP_DP(self, dungeon):
         """
         :type dungeon: List[List[int]]
         :rtype: int
         """
-        def cal_hp(maxhp,chp, this):
-            n_chp = chp+this
-            return [maxhp, n_chp] if n_chp>0 else [maxhp-n_chp, 0]
+        if not dungeon or not dungeon[0]:   return 0
+        dp = [[float("inf") for j in xrange(len(dungeon[0]) + 1)] for i in xrange(len(dungeon) + 1)]
+        dp[-1][-2] = dp[-2][-1] = 0
+        
+        i = len(dungeon) - 1
+        while i >=0:
+            j = len(dungeon[0]) - 1
+            while j >= 0:
+                dp[i][j] = max(0, min(dp[i+1][j], dp[i][j+1]) - dungeon[i][j])
+                j -= 1
+            i -= 1
+        return dp[0][0] + 1
 
-        dp = [[0,0] for row in dungeon]
-        for col in xrange(len(dungeon[0])):
-            for row in xrange(len(dungeon)):
-                this = dungeon[row][col]
-                if col==0 and row==0:
-                    dp[row] = cal_hp(0,0,this)
-                elif col==0:
-                    dp[row] = cal_hp(dp[row-1][0], dp[row-1][1], this)
-                elif row==0:
-                    dp[row] = cal_hp(dp[row][0], dp[row][1], this)
-                else:
-                    down = cal_hp(dp[row-1][0], dp[row-1][1], this)
-                    right = cal_hp(dp[row][0], dp[row][1], this)
-                    dp[row] = min(down, right) if down[0]!=right[0] else max(down,right)
-            print dp
-        return dp[-1][0]+1
 
+    def calculateMinimumHP_BFS_TLE(self, dungeon):
+        """
+        :type dungeon: List[List[int]]
+        :rtype: int
+        """
+        if not dungeon or not dungeon[0]:   return 0
+        
+        curHP = dungeon[0][0]
+        minHP = min(0, curHP)
+        heap = [(-minHP, curHP, 0, 0)]
+        visited = {}
+        while heap:
+            thisState = heapq.heappop(heap)
+            _, curHP, i, j = thisState
+            minHP = -thisState[0]
+            if (i,j) in visited and visited[(i,j)] > curHP:
+                continue
+            visited[(i,j)] = curHP
+            if i == len(dungeon) - 1 and j == len(dungeon[0]) - 1:
+                return -minHP + 1
+            if i + 1 < len(dungeon):
+                nCurHP = curHP + dungeon[i+1][j]
+                nMinHP = min(0, minHP, nCurHP)
+                heapq.heappush(heap, (-nMinHP, nCurHP, i+1, j))
+            if j + 1 < len(dungeon[0]):
+                nCurHP = curHP + dungeon[i][j+1]
+                nMinHP = min(0, minHP, nCurHP)
+                heapq.heappush(heap, (-nMinHP, nCurHP, i, j+1))
+        return None
 if __name__ == "__main__":
     test = Solution()
     query = [

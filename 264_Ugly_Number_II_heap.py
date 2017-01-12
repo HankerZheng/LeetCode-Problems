@@ -36,6 +36,7 @@ class Solution(object):
                 heappush(heap, (val*2, 2))
             if fact <=3:
                 heappush(heap, (val*3, 3))
+            print heap
         return val
 
 if __name__ == "__main__":
@@ -43,4 +44,4 @@ if __name__ == "__main__":
     for testcase in xrange(1,20):
         ans = test.nthUglyNumber(testcase)
         print ans
-    # print test.nthUglyNumber(10)
+    # print test.nthUglyNumber(100)

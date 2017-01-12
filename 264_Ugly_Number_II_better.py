@@ -13,7 +13,7 @@
 # 90 96 100 108 120 125 128 135
 #
 #
-# Key Points: The new number must be 2/3/4 times one smaller ugly number.
+# Key Points: The new number must be 2/3/5 times one smaller ugly number.
 #             Instead of maintaining 3 sorted list, keep track of 3 pointers
 #
 # Run time: 264 ms 

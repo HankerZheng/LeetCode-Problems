@@ -38,7 +38,37 @@ Subscribe to see which companies asked this question
 class Solution(object):
     p_dict = {}
     q_dict = {}
+
     def lowestCommonAncestor(self, root, p, q):
+        """
+        :type root: TreeNode
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: TreeNode
+        """
+        def traverseMark(node, target):
+            if not node:
+                return False
+            if node == target:
+                markerHash[node] = markerHash.get(node, 0) | 4
+                return True
+            if traverseMark(node.left, target):
+                markerHash[node] = markerHash.get(node, 0) | 1
+                return True
+            if traverseMark(node.right, target):
+                markerHash[node] = markerHash.get(node, 0) | 2
+                return True
+        
+        markerHash = {}
+        traverseMark(root, p)
+        traverseMark(root, q)
+        for node in markerHash:
+            if markerHash[node] in (3,5,6):
+                return node
+        return None
+
+
+    def lowestCommonAncestor_OldVersion(self, root, p, q):
         """
         :type root: TreeNode
         :type p: TreeNode

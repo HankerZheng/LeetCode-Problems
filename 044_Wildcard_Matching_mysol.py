@@ -40,49 +40,49 @@
 #             That is,  'abcabcabcdef' and 'ab*ca*bc*f', the first 'ca' must match the first 'ca', the first 'bc' must match the
 #             first 'bc'
 # 
-# Runtime: 144 ms
-
-class Solution(object):
+# Runtime: 144 ms# Runtime: 144 ms
     def isMatch(self, s, p):
         """
         :type s: str
         :type p: str
         :rtype: bool
         """
-        if not s:
-            return p == '' or p =='*'
-        if not p:
-            return False
+        i, j, star_match_pos, last_star_pos = 0, 0, 0, -1
+        while i < len(s):
+            if j < len(p) and (s[i] == p[j] or p[j] == '?'):
+                i += 1
+                j += 1
+            elif j < len(p) and p[j] == '*':
+                star_match_pos = i
+                last_star_pos = j
+                j += 1
+            elif last_star_pos != -1:
+                # roll back
+                i = star_match_pos + 1
+                j = last_star_pos + 1
+                star_match_pos += 1
+            else:
+                return False
 
-        dp = [[False for ch in xrange(len(p)+1)] for _ in xrange(len(s)+1)]
+        while j < len(p) and p[j] == '*': j += 1
+        return j == len(p)
 
-        for i, line in enumerate(dp):
-            for j, num in enumerate(line):
-                if i == 0 and j == 0:
-                    dp[i][j] = True
-                elif i == 0:
-                    dp[i][j] = dp[i][j-1] and p[j-1] == '*'
-                elif j == 0:
-                    pass
-                else:
-                    if p[j-1] == '*':
-                        dp[i][j] = dp[i][j-1] or dp[i-1][j]
-                    elif p[j-1] == '?':
-                        dp[i][j] = dp[i-1][j-1]
-                    else:
-                        dp[i][j] = dp[i-1][j-1] and s[i-1] == p[j-1]
-        return dp[-1][-1]
+
+
+
 
 
 if __name__ == '__main__':
     sol = Solution()
-    # assert sol.isMatch("aa","a") == False
-    # assert sol.isMatch("aa","aa") == True
-    # assert sol.isMatch("aaa","aa") == False
-    # assert sol.isMatch("aa", "*") == True
-    # assert sol.isMatch("aa", "a*") == True
-    # assert sol.isMatch("ab", "?*") == True
-    # assert sol.isMatch("aab", "c*a*b") == False
-    # assert sol.isMatch("c", "*?*") == True
-    # print sol.isMatch('ab','*a')
-    print sol.isMatch("babbbbaabababaabbababaababaabbaabababbaaababbababaaaaaabbabaaaabababbabbababbbaaaababbbabbbbbbbbbbaabbb","b**bb**a**bba*b**a*bbb**aba***babbb*aa****aabb*bbb***a")
+    assert sol.isMatch("aa","a") == False
+    assert sol.isMatch("aa","aa") == True
+    assert sol.isMatch("aaa","aa") == False
+    assert sol.isMatch("aa", "*") == True
+    assert sol.isMatch("aa", "a*") == True
+    assert sol.isMatch("ab", "?*") == True
+    assert sol.isMatch("aab", "c*a*b") == False
+    assert sol.isMatch("c", "*?*") == True
+    assert sol.isMatch('ab','*a') == False
+    assert sol.isMatch("abacda","*b*c?*a") == True
+    assert sol.isMatch("hi", "*?") == True
+    assert sol.isMatch("babbbbaabababaabbababaababaabbaabababbaaababbababaaaaaabbabaaaabababbabbababbbaaaababbbabbbbbbbbbbaabbb","b**bb**a**bba*b**a*bbb**aba***babbb*aa****aabb*bbb***a") == False

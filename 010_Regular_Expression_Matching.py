@@ -40,6 +40,39 @@ class Solution(object):
         :type p: str
         :rtype: bool
         """
+        lenS = len(s)
+        lenP = len(p)
+        dp = [[False for j in xrange(lenP+1)] for i in xrange(2)]
+        
+        for i in xrange(lenS+1):
+            for j in xrange(lenP+1):
+                if i == 0 and j == 0:
+                    # empty string can matches with empty pattern
+                    dp[i&1][j] = True
+                elif i == 0:
+                    # empty string matches with pattern "a*b*c*...."
+                    dp[i&1][j] = (j&1==0) and p[j-1] == "*" and dp[i&1][j-2]
+                elif j == 0:
+                    # non-empty string doesn't match with an empty pattern
+                    dp[i&1][j] = False
+                elif p[j-1] == "*":
+                    # current pattern is "*"
+                    # if "*" matches zero
+                    matchZero = dp[i&1][j-2]
+                    # if "*" matches something
+                    matchSomething = dp[(i-1)&1][j] and (s[i-1] == p[j-2] or p[j-2] == ".")
+                    dp[i&1][j] = matchZero or matchSomething
+                else:
+                    dp[i&1][j] = dp[(i-1)&1][j-1] and (s[i-1] == p[j-1] or p[j-1] == ".")
+                    
+        return dp[i&1][-1]
+
+    def isMatch_noSpaceOptimization(self, s, p):
+        """
+        :type s: str
+        :type p: str
+        :rtype: bool
+        """
         dp = [[False for _ in xrange(len(p)+1)] for __ in xrange(len(s)+1) ]
         dp[0][0] = True
         for j, ch_p in enumerate(p):

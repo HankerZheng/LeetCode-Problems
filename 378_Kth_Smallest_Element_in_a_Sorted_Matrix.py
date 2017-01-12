@@ -16,6 +16,8 @@
 
 # return 13.
 
+
+import bisect
 class Solution(object):
     def kthSmallest(self, matrix, k):
         """
@@ -23,36 +25,25 @@ class Solution(object):
         :type k: int
         :rtype: int
         """
-        def count_smaller(num):
-            # Count the # of elements in the matrix that
-            # is smaller than num.
-            # Return the number and the largest left-border
-            max_border = 0
-            i, j = 0, len(matrix[0])-1
-            count = 0
-            while i < len(matrix) and j > 0:
-                if num < matrix[i][j]:
-                    j -= 1
-                else:
-                    max_border = max(max_border, matrix[i][j])
-                    count += j+1
-                    i += 1
-            return count, max_border
-
-        if k == 1:
-            return matrix[0][0]
-
-        start, end = matrix[0][0], matrix[-1][-1]
-        while start <= end:
-            mid = start + (end-start)/2
-            count, max_border = count_smaller(mid)
-            if count == k:
-                return max_border
-            elif count > k:
-                end = mid - 1
+        def getRank(mid):
+            minRank = maxRank = 0
+            for i in xrange(len(matrix)):
+                minRank += bisect.bisect_left(matrix[i], mid)
+                maxRank += bisect.bisect_right(matrix[i], mid)
+            return minRank, maxRank
+        
+        left, right = matrix[0][0], matrix[-1][-1]
+        while left <= right:
+            mid = (left + right) /2
+            minRank, maxRank = getRank(mid)
+            if minRank <= k <= maxRank:
+                right = mid - 1
+            elif maxRank < k:
+                left = mid + 1
             else:
-                start = mid + 1
-        return end
+                right = mid - 1
+        return left
+
 
 if __name__ == '__main__':
     sol = Solution()
