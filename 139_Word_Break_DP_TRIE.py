@@ -46,6 +46,7 @@ class Solution(object):
                     dp[i] = 1
                     break
         return bool(dp[-1])
+
     def wordBreak_DFS_TRIETREE_TLE(self, s, wordDict):
         """
         :type s: str

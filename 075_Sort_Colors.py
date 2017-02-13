@@ -31,9 +31,6 @@ class Solution(object):
             pos+=1
 
 
-
-
-
     def sortColors_Bad(self, nums):
         """
         :type nums: List[int]
