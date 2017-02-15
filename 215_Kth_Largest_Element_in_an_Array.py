@@ -31,7 +31,7 @@ class Solution(object):
         Time complexity: average O(n)
         """
         def selection(start, end, k):
-            print start, end, k
+            # print start, end, k
             # termination condition
             if end - start < 5:
                 lst = nums[start:end + 1]
@@ -64,28 +64,6 @@ class Solution(object):
             return nums[start]
         
         return selection(0, len(nums) - 1, k)
-
-    def findKthLargest_heap(self, nums, k):
-        """
-        :type nums: List[int]
-        :type k: int
-        :rtype: int
-        Time Complexity: O(k) + O(k logk)
-        """
-        if nums is None:
-            return None
-
-        if k==1:
-            return max(nums)
-        if k==len(nums):
-            return min(nums)
-
-        heap = nums[:k]
-        heapify(heap)
-        for item in nums[k:]:
-            if item > heap[0]:
-                heapreplace(heap, item)
-        return heap[0]
 
 if __name__ == '__main__':
     sol = Solution()

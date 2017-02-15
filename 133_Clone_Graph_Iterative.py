@@ -21,9 +21,8 @@
 #          / \
 #          \_/
 
-
 # Definition for a undirected graph node
-# class UndirectedGraphNode(object):
+# class UndirectedGraphNode:
 #     def __init__(self, x):
 #         self.label = x
 #         self.neighbors = []
@@ -33,18 +32,24 @@ class Solution:
     # @return a undirected graph node
     def cloneGraph(self, node):
         if not node:
-            return None
-        stack = [node]
+            return node
         newNode = UndirectedGraphNode(node.label)
-        nodeMap = {node:newNode}
+        nodeMapping = {node:newNode}
+        # dfs stack
+        stack = [node]
         while stack:
-            thisNode = stack.pop(-1)
+            thisNode = stack.pop(0)
+            thisNewNode = nodeMapping[thisNode]
             for nei in thisNode.neighbors:
-                if nei in nodeMap:
-                    nodeMap[thisNode].neighbors.append(nodeMap[nei])
-                else:
-                    newNei = UndirectedGraphNode(nei.label)
-                    nodeMap[nei] = newNei
-                    nodeMap[thisNode].neighbors.append(newNei)
+                if not self.isVisited(nei, nodeMapping):
+                    newNei = self.createNewNode(nei, nodeMapping)
                     stack.append(nei)
+                thisNewNode.neighbors.append(nodeMapping[nei])
         return newNode
+                    
+    def isVisited(self, nei, nodeMapping):
+        return nei in nodeMapping
+    
+    def createNewNode(self, nei, nodeMapping):
+        newNode = UndirectedGraphNode(nei.label)
+        nodeMapping[nei] = newNode
