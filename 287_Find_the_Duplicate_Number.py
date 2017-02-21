@@ -30,3 +30,4 @@ class Solution(object):
 if __name__ == '__main__':
     sol = Solution()
     print sol.findDuplicate([1,5,4,2,3,2])
+    print sol.findDuplicate([1,1,1,1,1,1])

@@ -25,14 +25,12 @@ class Solution(object):
         """
         if not nums:
             return False
-        maxreach = 0
-        dest, i = len(nums)-1, 0
-        while i<= maxreach:
-            maxreach = max(maxreach, i+nums[i])
-            if maxreach >= dest:
-                return True
-            i+=1
-        return False
+        curPos = 0
+        maxReach = curPos + nums[curPos]
+        while curPos < len(nums) and curPos <= maxReach:
+            maxReach = max(maxReach, curPos + nums[curPos])
+            curPos += 1
+        return maxReach >= len(nums) - 1
 
 if __name__ == '__main__':
     sol = Solution()
