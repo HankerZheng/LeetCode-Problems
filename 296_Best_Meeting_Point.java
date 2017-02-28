@@ -9,6 +9,9 @@
 // 0 - 0 - 1 - 0 - 0
 // The point (0,2) is an ideal meeting point, as the total travel distance of 2+2+2=6 is minimal. So return 6.
 
+// Space: O(K), where k is the number of persons in the grid, at worst case, k = m*n
+// Time: O(m*n)
+
 public class Solution {
     public int minTotalDistance(int[][] grid) {
         

@@ -22,21 +22,19 @@ class Solution(object):
         :type k: int
         :rtype: str
         """
-        def helper(nums, k):
-            if len(nums)==0:
+        def helper(nums, k, loop):
+            if not nums:
                 return
-            length = len(nums)
-            subloop = 1
-            for i in xrange(length-1):
-                subloop*=(i+1)
-            res.append(nums[k/subloop])
-            nums.pop(k/subloop)
-            helper(nums, k-k/subloop*subloop)
+            thisK, newK = divmod(k, loop)
+            # print nums, k, loop, thisK, newK
+            res.append(nums.pop(thisK))
+            helper(nums, newK, loop / max(1, len(nums)))
+
         res = []
         loop = 1
-        for i in xrange(n):
-            loop*=(i+1)
-        helper([x+1 for x in xrange(n)], (k-1)%loop)
+        for i in xrange(1, n+1):
+            loop *= i
+        helper([x+1 for x in xrange(n)], (k-1) % loop, loop/n)
         return "".join([str(num) for num in res])
 
 if __name__ == '__main__':
