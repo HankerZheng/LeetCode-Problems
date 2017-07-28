@@ -9,25 +9,25 @@
 // The given array size will in the range [2, 10000].
 // The given array's numbers won't have any order.
 
-// Time Complexity: O(nlogn)
-// Runtime: 25 ms;
+// Time Complexity: O(n)
+// Runtime: 11 ms;
 
 
 public class Solution {
     public int[] findErrorNums(int[] nums) {
-        Arrays.sort(nums);
         int duplicate = 0;
-        int sum = 0;
-        boolean flagD = true;
+        int missing = 0;
         for (int i = 0; i < nums.length; i ++) {
-            sum += nums[i];
-            if (flagD && nums[i] == nums[i + 1]) {
-                flagD = false;
-                duplicate = nums[i];
+            while (nums[i] > 0){
+                int idx = nums[i] - 1;
+                int tmp = nums[i];
+                nums[i] = nums[idx];
+                nums[idx] = -tmp;
+            }
+            if (-nums[i] != i + 1){
+                missing = i + 1;
             }
         }
-        int normalSum = (1 + nums.length) * nums.length / 2;
-        int missing = duplicate + (normalSum - sum);
-        return new int[] {duplicate, missing};
+        return new int[] {-nums[missing - 1], missing};
     }
 }

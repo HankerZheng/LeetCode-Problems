@@ -11,26 +11,23 @@
 // Note:
 // The number of given pairs will be in the range [1, 1000].
 
-// Naive Solution, O(n2)
-// Runtime: 178 ms
+// Naive Solution, O(nlogn)
+// Runtime: 105 ms
 
 public class Solution {
     public int findLongestChain(int[][] pairs) {
-        Arrays.sort(pairs,
-            (e1, e2) -> {
-                if(e1[0] == e2[0]){ return e1[1] - e2[1];}
-                return e1[0] - e2[0];
-        });
-        int[] dp = new int[pairs.length];
-        int res = 0;
-        for (int i = 0; i < dp.length; i ++) {
-            for (int j = 0; j < i; j++) {
-                if (pairs[j][1] < pairs[i][0]) {
-                    dp[i] = Math.max(dp[i], dp[j] + 1);
-                }
+        if (pairs == null || pairs.length == 0) return 0;
+        Arrays.sort(pairs, (e1, e2) -> e1[1] - e2[1]);
+        int curEnd = pairs[0][1];
+        int idx = 0;
+        int curStack = 0;
+        while (idx < pairs.length) {
+            curEnd = pairs[idx++][1];
+            curStack += 1;
+            while (idx < pairs.length && pairs[idx][0] <= curEnd){
+                idx ++;
             }
-            res = Math.max(res, dp[i]);
         }
-        return res + 1;
+        return curStack;
     }
 }
