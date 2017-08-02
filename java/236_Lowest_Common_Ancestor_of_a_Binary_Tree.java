@@ -12,6 +12,8 @@
 // For example, the lowest common ancestor (LCA) of nodes 5 and 1 is 3. Another example is LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.
 
 
+// Runtime: 16 ms
+
 
 /**
  * Definition for a binary tree node.
@@ -23,56 +25,48 @@
  * }
  */
 public class Solution {
+
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        Deque<TreeNode> traverseStack = new LinkedList<>();
+        Deque<TreeNode> ancesterStack = new LinkedList<>();
         TreeNode dummy = new TreeNode(-1);
         dummy.left = root;
-        Stack<TreeNode> traverseStack = new Stack<>();
-        Stack<TreeNode> ancesterStack = new Stack<>();
-        traverseStack.add(root);
-        ancesterStack.add(dummy);
-        int foundFlag = 0;
-        int pos = 0;
+        traverseStack.addLast(root);
+        ancesterStack.addLast(dummy);
         
-        while (foundFlag != 1 && !traverseStack.isEmpty()) {
-            TreeNode thisNode = traverseStack.pop();
-            TreeNode ancester = ancesterStack.peek();
-            // update the ancesterStack
-            while(ancester.left != thisNode && ancester.right != thisNode) {
-                ancesterStack.pop();
-                ancester = ancesterStack.peek();
+        while (!traverseStack.isEmpty()) {
+            TreeNode curNode = traverseStack.removeLast();
+            TreeNode curAncester = ancesterStack.getLast();
+
+            while (curAncester.left != curNode && curAncester.right != curNode) {
+                curAncester = ancesterStack.removeLast();
             }
-            ancesterStack.push(thisNode);
-            if (thisNode == p || thisNode == q) {
-                foundFlag += 1;
-                pos = ancesterStack.size();
+            ancesterStack.addLast(curNode);
+
+            if (curNode.left != null) traverseStack.addLast(curNode.left);
+            if (curNode.right != null) traverseStack.addLast(curNode.right);
+            if (curNode == p || curNode == q) {
+                break;
             }
-            if (thisNode.right != null) traverseStack.push(thisNode.right);
-            if (thisNode.left != null) traverseStack.push(thisNode.left);
         }
-        System.out.println(ancesterStack);
-        
-        while (foundFlag != 2 && !traverseStack.isEmpty()) {
-            TreeNode thisNode = traverseStack.pop();
-            TreeNode ancester = ancesterStack.peek();
-            // update the ancesterStack
-            while(ancester.left != thisNode && ancester.right != thisNode) {
-                ancesterStack.pop();
-                ancester = ancesterStack.peek();
+        TreeNode res = ancesterStack.getLast();
+        while (!traverseStack.isEmpty()) {
+            TreeNode curNode = traverseStack.removeLast();
+            TreeNode curAncester = ancesterStack.getLast();
+            while (curAncester.left != curNode && curAncester.right != curNode) {
+                ancesterStack.removeLast();
+                if (res == curAncester) {
+                    res = ancesterStack.getLast();
+                }
+                curAncester = ancesterStack.getLast();
             }
-            pos = Math.min(pos, ancesterStack.size());
-            ancesterStack.push(thisNode);
-            if (thisNode == p || thisNode == q) {
-                foundFlag += 1;
+            ancesterStack.addLast(curNode);
+            if (curNode.left != null) traverseStack.addLast(curNode.left);
+            if (curNode.right != null) traverseStack.addLast(curNode.right);
+            if (curNode == p || curNode == q) {
+                return res;
             }
-            if (thisNode.right != null) traverseStack.push(thisNode.right);
-            if (thisNode.left != null) traverseStack.push(thisNode.left);            
         }
-        if (foundFlag != 2) {
-            return null;
-        }
-        while (ancesterStack.size() > pos) {
-            ancesterStack.pop();
-        }
-        return ancesterStack.peek();
+        return root;
     }
 }
