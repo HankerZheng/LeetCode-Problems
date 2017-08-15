@@ -3,6 +3,9 @@
 // Follow up:
 // Could you do it in O(n) time and O(1) space?
 
+
+// Runtime: 2 ms
+
 /**
  * Definition for singly-linked list.
  * public class ListNode {
@@ -13,35 +16,33 @@
  */
 public class Solution {
     public boolean isPalindrome(ListNode head) {
-        if ((head == null) || (head.next == null)){
-            return true;
-        }
-        ListNode fast = head, slow = head;
-        while (fast != null && fast.next != null){
-            fast = fast.next.next;
+        if (head == null || head.next == null) return true;
+        ListNode fast = head.next;
+        ListNode slow = head;
+        while (fast != null && fast.next != null) {
             slow = slow.next;
+            fast = fast.next.next;
         }
-        ListNode reversedNode = reverseLinkedList(slow);
-        ListNode curNode = head;
-        while (curNode!=null && reversedNode!=null){
-            if (curNode.val != reversedNode.val){
-                return false;
-            }
-            curNode = curNode.next;
-            reversedNode = reversedNode.next;
+        ListNode lastHalf = reverseLinkedList(slow.next);
+        ListNode firstHalf = head;
+        while(lastHalf != null) {
+            if (lastHalf.val != firstHalf.val) return false;
+            lastHalf = lastHalf.next;
+            firstHalf = firstHalf.next;
         }
         return true;
     }
-    public ListNode reverseLinkedList(ListNode root){
+    
+    private ListNode reverseLinkedList(ListNode head) {
         ListNode prevNode = null;
-        ListNode curNode = root;
-        while (curNode != null){
-            ListNode tmp = curNode.next;
+        ListNode curNode = head;
+        while (curNode != null) {
+            ListNode nextNode = curNode.next;
             curNode.next = prevNode;
             prevNode = curNode;
-            curNode = tmp;
-            
+            curNode = nextNode;
         }
         return prevNode;
+    
     }
 }

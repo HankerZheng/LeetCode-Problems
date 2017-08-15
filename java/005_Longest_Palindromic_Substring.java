@@ -14,6 +14,9 @@
 // Output: "bb"
 
 
+
+// Runtime: 119 ms
+
 public class Solution {
     public String longestPalindrome(String s) {
         int length = s.length();
